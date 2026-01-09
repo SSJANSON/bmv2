@@ -1,0 +1,39 @@
+load("@rules_foreign_cc//foreign_cc:defs.bzl", "cmake")
+
+cmake(
+    name = "nanomsg_lib",
+    cache_entries = {
+        "NN_STATIC_LIB": "ON",
+        "NN_ENABLE_DOC": "OFF",
+        "NN_TESTS": "OFF",
+        "CMAKE_INSTALL_LIBDIR": "lib",
+    },
+    lib_source = "@nanomsg//:all_srcs",
+    out_static_libs = ["libnanomsg.a"], 
+    # REMOVE install_args entirely
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "notifications",
+    srcs = ["notifications.cpp"],
+    hdrs = [
+        "notifications.h",
+        "nn.h",
+    ],
+    deps = [
+        ":nanomsg_lib",
+    ]
+)
+
+cc_library(
+    name = "packet_pipe",
+    srcs = ["packet_pipe.cpp"],
+    hdrs = [
+        "packet_pipe.h",
+        "nn.h",
+    ],
+    deps = [
+        ":nanomsg_lib",
+    ]
+)
