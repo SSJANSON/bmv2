@@ -1,0 +1,32 @@
+cc_library(
+    name = "bmpi",
+    srcs = [
+        "pi.cpp",
+        "pi_imp.cpp",
+        "pi_tables_imp.cpp",
+        "pi_act_prof_imp.cpp",
+        "pi_counter_imp.cpp",
+        "pi_meter_imp.cpp",
+        "pi_learn_imp.cpp",
+        "pi_mc_imp.cpp",
+        "pi_clone_imp.cpp",
+        "common.cpp",
+        "action_helpers.cpp",
+        "direct_res_spec.cpp",
+        "group_selection.cpp",
+        "device_state.cpp",
+    ],
+    hdrs = [
+        "common.h",
+        "action_helpers.h",
+        "direct_res_spec.h",
+        "group_selection.h",
+        "device_state.h",
+    ],
+    includes = ["src"],
+    defines = select({
+        "@//:WITH_TARGETS": ["WITH_SIMPLE_SWITCH"],
+        "//conditions:default": [],
+    }),
+    visibility = ["//visibility:public"],
+)
