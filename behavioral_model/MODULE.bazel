@@ -6,10 +6,6 @@ module(
 bazel_dep(name = "rules_cc", version = "0.2.9")
 bazel_dep(name = "bazel_skylib", version = "1.8.1")
 bazel_dep(name = "rules_foreign_cc", version = "0.13.0")
-bazel_dep(name = "rules_java", version = "8.14.0")
-
-common_config = use_extension("@rules_cc//cc:extensions.bzl", "cc_configure_extension")
-use_repo(common_config, "local_config_cc")
 
 http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
