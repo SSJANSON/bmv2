@@ -1,0 +1,78 @@
+load("@rules_foreign_cc//foreign_cc:defs.bzl", "configure_make", "cmake")
+
+cmake(
+    name = "nanomsg_lib",
+    cache_entries = {
+        "NN_STATIC_LIB": "ON",
+        "NN_ENABLE_DOC": "OFF",
+        "NN_TESTS": "OFF",
+        "CMAKE_INSTALL_LIBDIR": "lib",
+    },
+    lib_source = "@nanomsg//:all_srcs",
+    out_static_libs = ["libnanomsg.a"], 
+    # REMOVE install_args entirely
+    visibility = ["//visibility:public"],
+)
+
+configure_make(
+    name = "thrift_lib",
+    lib_source = "@thrift//:all_srcs",
+    autogen = True,
+    autogen_command = "./bootstrap.sh",
+    configure_in_place = True,
+    out_lib_dir = "lib",
+    env = {
+        "AR": "/usr/bin/ar",
+        "CPPFLAGS": "-I/opt/homebrew/opt/openssl@3/include -I/opt/homebrew/include",
+        "CXXFLAGS": "-Wno-error -fPIC",
+    },
+    configure_options = [
+        "--disable-shared",
+        "--enable-static",
+        "--with-as3=no",
+        "--with-c_glib=no",
+        "--with-csharp=no",
+        "--with-cpp=yes",
+        "--with-cl=no",
+        "--with-d=no",
+        "--with-dart=no",
+        "--with-dotnetcore=no",
+        "--with-erlang=no",
+        "--with-go=no",
+        "--with-haskell=no",
+        "--with-haxe=no",
+        "--with-java=no",
+        "--with-lua=no",
+        "--with-nodejs=no",
+        "--with-nodets=no",
+        "--with-perl=no",
+        "--with-php=no",
+        "--with-python=no",
+        "--with-py3=no",
+        "--with-qt5=no",
+        "--with-ruby=no",
+        "--with-rs=no",
+        "--with-swift=no",
+    ],
+    out_static_libs = ["libthrift.a"],
+    out_headers_only = False, 
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "notifications",
+    srcs = [
+        "notifications.cpp",
+        "server.cpp",
+        "SimplePre_server.cpp",
+        "SimplePreLAG_server.cpp",
+        "Standard_server.cpp",
+    ],
+    hdrs = [
+        "nn.h",
+    ],
+    deps = [
+        ":nanomsg_lib",
+        ":thrift_lib",
+    ]
+)
